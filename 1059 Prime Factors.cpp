@@ -35,8 +35,12 @@ int main()
 		cout << "1=1";
 		return 0;
 	}
+    if(isprime(n)){
+        cout<<n<<'='<<n;
+        return 0;
+    }
  	for (long int i = 2; i <= n; ++i) {
-		if (!isprime(i)) continue;
+		if (n%i ||!isprime(i)) continue;
 		while (n%i == 0) {
 			n /= i;
 			ans[i]++;
