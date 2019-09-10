@@ -19,55 +19,40 @@ enum color { black, red };
 struct node {
 	node* left, *right;
 	color c;
-	int data, height;
-	node(int h) :left(nullptr), right(nullptr), c(black), data(0), height(h) {};
-	node(int data_, color c_, int h) :data(data_), c(c_), height(h){
-		left = new node(h + 1);
-		right = new node(h + 1);
-	};
+	int data;
+	node(int data_, color c_) :data(data_), c(c_),left(nullptr),right(nullptr){}
 };
-
 struct tree {
 	node* root;
 	int height;
-	node* insert_(int data, node* nd, int he){
-		if (!nd->data) {
-			delete nd;
-			color c = black;
-			int h = he;
-			if (data < 0) {
-				c = red;
-				data = -data;
-			}
-			if (c == black) h++;
-			return new node(data, c, h);
-		}
-		if (abs(data) < nd->data) nd->left = insert_(data, nd->left, nd->height);
-		else nd->right = insert_(data, nd->right, nd->height);
+	node* insert_(int data, node* nd){
+		if(!nd) return new node{abs(data),data<0?red:black};
+		if (abs(data) < nd->data) nd->left = insert_(data, nd->left);
+		else nd->right = insert_(data, nd->right);
 		return nd;
 	}
-	void insert(int data) { root = insert_(data, root, 0); }
-	bool isbrt_(node* nd) {
-		if (!nd->left && !nd->right) {
-			if (height == -1) height = nd->height;
-			else if (height != nd->height) return false;
+	void insert(int data) { root = insert_(data, root); }
+	bool isbrt_(node* nd, int h) {
+	    int nh = nd->c==red?h:h+1;
+		if (!nd->left || !nd->right) {
+			if (height == -1) height = nh+1;
+			else if (height != nh+1) return false;
 		}
 		if (nd->c == red) {
 			if ((nd->left && nd->left->c == red) || (nd->right && nd->right->c == red)) return false;
 		}
-		if (nd->left && !isbrt_(nd->left)) return false;
-		if (nd->right && !isbrt_(nd->right)) return false;
+		if (nd->left && !isbrt_(nd->left,nh)) return false;
+		if (nd->right && !isbrt_(nd->right,nh)) return false;
 		return true;
 	}
 	bool isbrt() {
 		if (root->c == red) return false;
-		return isbrt_(root); 
+		return isbrt_(root, 0);
 	}
 	void reset() {
-		root = new node(0);
+		root = nullptr;
 		height = -1;
 	}
-
 };
 int main()
 {

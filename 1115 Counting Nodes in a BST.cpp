@@ -15,7 +15,7 @@
 #include<queue>
 #include<stack>
 using namespace std;
-vector<int> ans;
+int n1=0,n2=1;
 struct node {
 	node* left, *right;
 	int data;
@@ -31,7 +31,6 @@ struct btree {
 	}
 	void insert(int data) { root = insert_(data, root); }
 	void levelorder() {
-		if (root) ans.push_back(1);
 		queue<node*> q;
 		q.push(root);
 		node* last = root, *tmplast;
@@ -50,17 +49,18 @@ struct btree {
 				tmplast = cur->right;
 			}
 			if (last == cur) {
+                if(ct==0) break;
+                n1=n2;
+                n2=ct;
 				last = tmplast;
-				ans.push_back(ct);
 				ct = 0;
 			}
 		}
-		ans.pop_back();
 	}
 	btree() :root(nullptr){}
 };
 int main()
-{	
+{
 	int n, num;
 	cin >> n;
 	btree t;
@@ -69,6 +69,6 @@ int main()
 		t.insert(num);
 	}
 	t.levelorder();
-	cout << ans[ans.size() - 1] << " + " << ans[ans.size() - 2] << " = " << ans[ans.size() - 1] + ans[ans.size() - 2];
+	cout << n2 << " + " << n1 << " = " << n1 + n2;
 	return 0;
 }
